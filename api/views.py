@@ -53,32 +53,35 @@ class GenericGetUpdateDeleteView(RetrieveUpdateDestroyAPIView):
         view = super(GenericGetUpdateDeleteView, self).as_view(**kwargs)
         return view
 
+    def __init__(self, model, serializer_class, **kwargs):
+        self.model
+
     def get_queryset(self, pk):
         try:
-            book = self.model.objects.get(pk=pk)
+            obj = self.model.objects.get(pk=pk)
         except self.model.DoesNotExist:
             content = {
                 'status': 'Not Found'
             }
             return Response(content, status=status.HTTP_404_NOT_FOUND)
-        return book
+        return obj
 
     def get(self, request, pk):
-        book = self.get_queryset(pk)
-        serializer = self.serializer_class(book)
+        obj = self.get_queryset(pk)
+        serializer = self.serializer_class(obj)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self,request, pk):
-        book = self.get_queryset(pk)
-        serializer = self.serializer_class(book, data=request.data)
+        obj = self.get_queryset(pk)
+        serializer = self.serializer_class(obj, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
     def delete(self,request, pk):
-        book = self.get_queryset(pk)
-        book.delete()
+        obj = self.get_queryset(pk)
+        obj.delete()
         content = {
             'status': 'NO CONTENT'
         }

@@ -1,11 +1,9 @@
 from django.urls import include, path, re_path
 from django.conf.urls import url
-from api.views import GenericListPostView, GenericGetUpdateDeleteView
 from . import views
 from .models import Book, Comment
 from .serializers import BookSerializer, CommentSerializer
 
-generic1 = GenericListPostView
 
 urlpatterns = [
     path('', views.BookListCreate.as_view(),name='books_get_post'),
